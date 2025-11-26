@@ -13,6 +13,19 @@ class ChessGame {
             white: { kingside: true, queenside: true },
             black: { kingside: true, queenside: true }
         };
+        
+        // Signal that this script loaded
+        this.updateStatus('status-game-functionality', 'game-functionality: loaded');
+        console.log('ChessGame class loaded');
+    }
+
+    updateStatus(id, text) {
+        try {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
+        } catch (e) {
+            // Ignore if element doesn't exist
+        }
     }
 
     initializeBoard() {
@@ -371,13 +384,4 @@ class ChessGame {
     }
 }
 
-// Signal that this script loaded (helps startup status display)
-try {
-    if (document && document.getElementById) {
-        const el = document.getElementById('status-game-functionality');
-        if (el) el.textContent = 'game-functionality: loaded';
-    }
-    console.log('game-functionality loaded');
-} catch (e) {
-    console.warn('Could not update startup status for game-functionality:', e);
-}
+console.log('game-functionality.js loaded');

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chess Game</title>
-    <link rel="stylesheet" href="Styles/Light.css" id="theme-style">
+    <link rel="stylesheet" href="./Styles/Light.css" id="theme-style">
 </head>
 <body>
     <div class="container">
@@ -16,12 +16,13 @@
             </div>
         </header>
 
-            <div id="startup-status" style="text-align:center;margin:10px 0;font-size:0.9rem;">
-                <span id="status-game-functionality">game-functionality: pending</span>
-                <span id="status-ai-moves" style="margin-left:10px;">ai-moves: pending</span>
-                <span id="status-game-ui" style="margin-left:10px;">game-ui: pending</span>
-                <span id="status-toggle-theme" style="margin-left:10px;">theme-toggle: pending</span>
-            </div>
+        <!-- Debug status (remove these after testing) -->
+        <div style="font-size: 12px; color: #666; margin-bottom: 10px;">
+            <div id="status-game-functionality">game-functionality: pending</div>
+            <div id="status-ai-moves">ai-moves: pending</div>
+            <div id="status-game-ui">game-ui: pending</div>
+            <div id="status-toggle-theme">theme-toggle: pending</div>
+        </div>
 
         <div id="game-mode-selection" class="mode-selection">
             <h2>Select Game Mode</h2>
@@ -48,23 +49,10 @@
         </div>
     </div>
 
-    <!-- Inline diagnostic script to confirm the page can run inline JS -->
-    <script>
-        try {
-            console.log('Inline diagnostic script running');
-            const el = document.getElementById('status-game-functionality');
-            if (el) el.textContent = 'page-inline: executed';
-        } catch (e) {
-            console.warn('Inline diagnostic script error', e);
-        }
-    </script>
-
-    <script src="Main/game-functionality.js" onload="(function(){try{document.getElementById('status-game-functionality').textContent='game-functionality: onload';console.log('game-functionality onload');}catch(e){console.warn(e);}})()" onerror="(function(){try{document.getElementById('status-game-functionality').textContent='game-functionality: error loading';console.error('Failed to load Main/game-functionality.js');}catch(e){console.warn(e);}})()"></script>
-
-    <script src="AI/Moves.js" onload="(function(){try{document.getElementById('status-ai-moves').textContent='ai-moves: onload';console.log('ai-moves onload');}catch(e){console.warn(e);}})()" onerror="(function(){try{document.getElementById('status-ai-moves').textContent='ai-moves: error loading';console.error('Failed to load AI/Moves.js');}catch(e){console.warn(e);}})()"></script>
-
-    <script src="Main/game-ui.js" onload="(function(){try{document.getElementById('status-game-ui').textContent='game-ui: onload';console.log('game-ui onload');}catch(e){console.warn(e);}})()" onerror="(function(){try{document.getElementById('status-game-ui').textContent='game-ui: error loading';console.error('Failed to load Main/game-ui.js');}catch(e){console.warn(e);}})()"></script>
-
-    <script src="Styles/toggle-theme.js" onload="(function(){try{document.getElementById('status-toggle-theme').textContent='theme-toggle: onload';console.log('theme-toggle onload');}catch(e){console.warn(e);}})()" onerror="(function(){try{document.getElementById('status-toggle-theme').textContent='theme-toggle: error loading';console.error('Failed to load Styles/toggle-theme.js');}catch(e){console.warn(e);}})()"></script>
+    <!-- Load scripts in correct order -->
+    <script src="./Main/game-functionality.js"></script>
+    <script src="./AI/Moves.js"></script>
+    <script src="./Main/game-ui.js"></script>
+    <script src="./Styles/toggle-theme.js"></script>
 </body>
 </html>

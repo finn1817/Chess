@@ -34,6 +34,19 @@ class ChessAI {
             [-40,-20,  0,  5,  5,  0,-20,-40],
             [-50,-40,-30,-30,-30,-30,-40,-50]
         ];
+
+        // Signal that this script loaded
+        this.updateStatus('status-ai-moves', 'ai-moves: loaded');
+        console.log('ChessAI class loaded');
+    }
+
+    updateStatus(id, text) {
+        try {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
+        } catch (e) {
+            // Ignore if element doesn't exist
+        }
     }
 
     getBestMove(game) {
@@ -192,13 +205,4 @@ class ChessAI {
     }
 }
 
-// Signal that this script loaded (helps startup status display)
-try {
-    if (document && document.getElementById) {
-        const el = document.getElementById('status-ai-moves');
-        if (el) el.textContent = 'ai-moves: loaded';
-    }
-    console.log('ai-moves (ChessAI) loaded');
-} catch (e) {
-    console.warn('Could not update startup status for ai-moves:', e);
-}
+console.log('AI/Moves.js loaded');

@@ -1,18 +1,31 @@
 class ThemeToggle {
     constructor() {
+        console.log('ThemeToggle constructor called');
+        
         this.themeToggle = document.getElementById('theme-toggle');
         this.themeStyle = document.getElementById('theme-style');
+        
+        if (!this.themeToggle || !this.themeStyle) {
+            console.error('Theme toggle elements not found!');
+            return;
+        }
+        
         this.currentTheme = localStorage.getItem('chess-theme') || 'light';
         
         this.initializeTheme();
         this.initializeEventListeners();
+        
         // Signal theme toggle initialized
+        this.updateStatus('status-toggle-theme', 'theme-toggle: initialized');
+        console.log('ThemeToggle initialized (current theme:', this.currentTheme, ')');
+    }
+
+    updateStatus(id, text) {
         try {
-            const el = document.getElementById('status-toggle-theme');
-            if (el) el.textContent = 'theme-toggle: initialized';
-            console.log('ThemeToggle initialized (current theme:', this.currentTheme, ')');
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
         } catch (e) {
-            console.warn('Could not update startup status for theme-toggle:', e);
+            // Ignore if element doesn't exist
         }
     }
 
@@ -33,10 +46,11 @@ class ThemeToggle {
         this.applyTheme(this.currentTheme);
         this.updateToggleButton();
         localStorage.setItem('chess-theme', this.currentTheme);
+        console.log('Theme changed to:', this.currentTheme);
     }
 
     applyTheme(theme) {
-        const cssFile = theme === 'light' ? 'Styles/Light.css' : 'Styles/Dark.css';
+        const cssFile = theme === 'light' ? './Styles/Light.css' : './Styles/Dark.css';
         this.themeStyle.href = cssFile;
     }
 
@@ -48,19 +62,14 @@ class ThemeToggle {
     }
 }
 
-// Initialize theme toggle when page loads (handles already-fired event)
-function _onReadyTheme(fn) {
-    if (document.readyState === 'loading') {
-        window.addEventListener('DOMContentLoaded', fn);
-    } else {
-        fn();
-    }
-}
-
-_onReadyTheme(() => {
+// Wait for DOM to load, then initialize
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing ThemeToggle...');
     try {
-        new ThemeToggle();
+        window.themeToggle = new ThemeToggle();
     } catch (err) {
         console.error('Failed to initialize ThemeToggle:', err);
     }
 });
+
+console.log('Styles/toggle-theme.js loaded');
