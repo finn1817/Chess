@@ -1655,7 +1655,13 @@
 
             setupEventListeners() {
                 document.getElementById('vs-ai-btn').addEventListener('click', () => {
-                    this.showDifficultySelection();
+                    // Start a single, working AI mode immediately (no difficulty selection)
+                    try {
+                        this.ai.setDifficulty('medium');
+                    } catch (e) {
+                        console.warn('AI difficulty set failed, continuing with defaults', e);
+                    }
+                    this.startGame('ai');
                 });
 
                 document.getElementById('vs-human-btn').addEventListener('click', () => {
