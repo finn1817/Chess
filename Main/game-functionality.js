@@ -370,3 +370,14 @@ class ChessGame {
         };
     }
 }
+
+// Signal that this script loaded (helps startup status display)
+try {
+    if (document && document.getElementById) {
+        const el = document.getElementById('status-game-functionality');
+        if (el) el.textContent = 'game-functionality: loaded';
+    }
+    console.log('game-functionality loaded');
+} catch (e) {
+    console.warn('Could not update startup status for game-functionality:', e);
+}

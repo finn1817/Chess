@@ -191,3 +191,14 @@ class ChessAI {
         return !game.hasValidMoves('white') || !game.hasValidMoves('black');
     }
 }
+
+// Signal that this script loaded (helps startup status display)
+try {
+    if (document && document.getElementById) {
+        const el = document.getElementById('status-ai-moves');
+        if (el) el.textContent = 'ai-moves: loaded';
+    }
+    console.log('ai-moves (ChessAI) loaded');
+} catch (e) {
+    console.warn('Could not update startup status for ai-moves:', e);
+}

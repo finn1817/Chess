@@ -6,10 +6,19 @@ class ThemeToggle {
         
         this.initializeTheme();
         this.initializeEventListeners();
+        // Signal theme toggle initialized
+        try {
+            const el = document.getElementById('status-toggle-theme');
+            if (el) el.textContent = 'theme-toggle: initialized';
+            console.log('ThemeToggle initialized (current theme:', this.currentTheme, ')');
+        } catch (e) {
+            console.warn('Could not update startup status for theme-toggle:', e);
+        }
     }
 
     initializeEventListeners() {
         this.themeToggle.addEventListener('click', () => {
+            console.log('theme-toggle clicked');
             this.toggleTheme();
         });
     }

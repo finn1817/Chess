@@ -5,26 +5,39 @@ class ChessUI {
         this.boardElement = document.getElementById('chess-board');
         this.initializeEventListeners();
         this.createBoard();
+        // Signal UI initialized
+        try {
+            const el = document.getElementById('status-game-ui');
+            if (el) el.textContent = 'game-ui: initialized';
+            console.log('ChessUI initialized');
+        } catch (e) {
+            console.warn('Could not update startup status for game-ui:', e);
+        }
     }
 
     initializeEventListeners() {
         document.getElementById('single-player').addEventListener('click', () => {
+            console.log('single-player clicked');
             this.startGame('single');
         });
 
         document.getElementById('two-player').addEventListener('click', () => {
+            console.log('two-player clicked');
             this.startGame('two');
         });
 
         document.getElementById('new-game').addEventListener('click', () => {
+            console.log('new-game clicked');
             this.showModeSelection();
         });
 
         document.getElementById('flip-board').addEventListener('click', () => {
+            console.log('flip-board clicked');
             this.flipBoard();
         });
 
         document.getElementById('back-to-menu').addEventListener('click', () => {
+            console.log('back-to-menu clicked');
             this.showModeSelection();
         });
     }
@@ -61,7 +74,10 @@ class ChessUI {
                 }
                 
                 square.addEventListener('click', (e) => {
-                    this.handleSquareClick(parseInt(e.target.dataset.row), parseInt(e.target.dataset.col));
+                    const r = parseInt(e.currentTarget.dataset.row);
+                    const c = parseInt(e.currentTarget.dataset.col);
+                    console.log('square clicked display coords:', r, c);
+                    this.handleSquareClick(r, c);
                 });
                 
                 this.boardElement.appendChild(square);
