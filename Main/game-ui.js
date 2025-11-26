@@ -206,7 +206,20 @@ class ChessUI {
     }
 }
 
-// Initialize the game when the page loads
-window.addEventListener('DOMContentLoaded', () => {
-    new ChessUI();
+// Initialize the game when the page loads (handles already-fired event)
+function _onReady(fn) {
+    if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', fn);
+    } else {
+        fn();
+    }
+}
+
+_onReady(() => {
+    try {
+        new ChessUI();
+    } catch (err) {
+        // Surface any initialization errors to help debugging
+        console.error('Failed to initialize ChessUI:', err);
+    }
 });

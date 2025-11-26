@@ -39,7 +39,19 @@ class ThemeToggle {
     }
 }
 
-// Initialize theme toggle when page loads
-window.addEventListener('DOMContentLoaded', () => {
-    new ThemeToggle();
+// Initialize theme toggle when page loads (handles already-fired event)
+function _onReadyTheme(fn) {
+    if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', fn);
+    } else {
+        fn();
+    }
+}
+
+_onReadyTheme(() => {
+    try {
+        new ThemeToggle();
+    } catch (err) {
+        console.error('Failed to initialize ThemeToggle:', err);
+    }
 });
