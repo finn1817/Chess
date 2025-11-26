@@ -879,9 +879,9 @@
             }
 
             /* ================================ MOVE GENERATION ================================ */
-            getValidMoves(fromRow, fromCol) {
+            getValidMoves(fromRow, fromCol, player = this.currentPlayer) {
                 const piece = this.getPieceAt(fromRow, fromCol);
-                if (!piece || piece.color !== this.currentPlayer) return [];
+                if (!piece || piece.color !== player) return [];
 
                 const moves = this.generatePieceMoves(fromRow, fromCol, piece);
                 return moves.filter(([toRow, toCol]) => !this.wouldBeInCheck(fromRow, fromCol, toRow, toCol, piece.color));
@@ -1110,7 +1110,7 @@
                     for (let col = 0; col < 8; col++) {
                         const piece = this.getPieceAt(row, col);
                         if (piece && piece.color === color) {
-                            const validMoves = this.getValidMoves(row, col);
+                            const validMoves = this.getValidMoves(row, col, color);
                             for (const move of validMoves) {
                                 moves.push({ from: [row, col], to: move });
                             }
@@ -1323,20 +1323,17 @@
             }
 
             async makeMove() {
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        const bestMove = this.getBestMove();
-                        if (bestMove) {
-                            const success = this.game.makeMove(
-                                bestMove.from[0], bestMove.from[1], 
-                                bestMove.to[0], bestMove.to[1]
-                            );
-                            resolve(success);
-                        } else {
-                            resolve(false);
-                        }
-                    }, Math.random() * 1000 + 500); // Simulate thinking time
-                });
+                // Compute and play the best move immediately. The UI controls
+                // when the AI actually acts (we add a 3s delay in the UI for UX).
+                const bestMove = this.getBestMove();
+                if (bestMove) {
+                    const success = this.game.makeMove(
+                        bestMove.from[0], bestMove.from[1], 
+                        bestMove.to[0], bestMove.to[1]
+                    );
+                    return success;
+                }
+                return false;
             }
 
             getBestMove() {
@@ -1941,7 +1938,8 @@
                 this.isWaitingForAI = true;
                 this.gameStatusElement.textContent = 'AI is thinking...';
                 this.gameStatusElement.classList.add('ai-thinking');
-                
+                // Wait 3 seconds to simulate thinking and give player feedback
+                await new Promise(resolve => setTimeout(resolve, 3000));
                 const success = await this.ai.makeMove();
                 
                 this.gameStatusElement.classList.remove('ai-thinking');
