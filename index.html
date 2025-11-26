@@ -887,14 +887,14 @@
                 return moves.filter(([toRow, toCol]) => !this.wouldBeInCheck(fromRow, fromCol, toRow, toCol, piece.color));
             }
 
-            generatePieceMoves(row, col, piece) {
+            generatePieceMoves(row, col, piece, options = { includeCastling: true }) {
                 switch (piece.type) {
                     case 'PAWN': return this.getPawnMoves(row, col, piece.color);
-                    case 'ROOK': return this.getRookMoves(row, col);
-                    case 'BISHOP': return this.getBishopMoves(row, col);
-                    case 'QUEEN': return this.getQueenMoves(row, col);
-                    case 'KING': return this.getKingMoves(row, col, piece.color);
-                    case 'KNIGHT': return this.getKnightMoves(row, col);
+                    case 'ROOK': return this.getRookMoves(row, col, piece.color);
+                    case 'BISHOP': return this.getBishopMoves(row, col, piece.color);
+                    case 'QUEEN': return this.getQueenMoves(row, col, piece.color);
+                    case 'KING': return this.getKingMoves(row, col, piece.color, options.includeCastling);
+                    case 'KNIGHT': return this.getKnightMoves(row, col, piece.color);
                     default: return [];
                 }
             }
@@ -931,33 +931,33 @@
                 return moves;
             }
 
-            getRookMoves(row, col) {
+            getRookMoves(row, col, color) {
                 const moves = [];
                 const directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
                 
                 for (const [dRow, dCol] of directions) {
-                    moves.push(...this.getLinearMoves(row, col, dRow, dCol));
+                    moves.push(...this.getLinearMoves(row, col, dRow, dCol, color));
                 }
                 
                 return moves;
             }
 
-            getBishopMoves(row, col) {
+            getBishopMoves(row, col, color) {
                 const moves = [];
                 const directions = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
                 
                 for (const [dRow, dCol] of directions) {
-                    moves.push(...this.getLinearMoves(row, col, dRow, dCol));
+                    moves.push(...this.getLinearMoves(row, col, dRow, dCol, color));
                 }
                 
                 return moves;
             }
 
-            getQueenMoves(row, col) {
-                return [...this.getRookMoves(row, col), ...this.getBishopMoves(row, col)];
+            getQueenMoves(row, col, color) {
+                return [...this.getRookMoves(row, col, color), ...this.getBishopMoves(row, col, color)];
             }
 
-            getKingMoves(row, col, color) {
+            getKingMoves(row, col, color, includeCastling = true) {
                 const moves = [];
                 const directions = [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]];
                 
@@ -972,13 +972,15 @@
                     }
                 }
                 
-                // Castling
-                moves.push(...this.getCastlingMoves(row, col, color));
+                // Castling (only include when requested — disable while checking attacks to avoid recursion)
+                if (includeCastling) {
+                    moves.push(...this.getCastlingMoves(row, col, color));
+                }
                 
                 return moves;
             }
 
-            getKnightMoves(row, col) {
+            getKnightMoves(row, col, color) {
                 const moves = [];
                 const knightMoves = [[-2,-1], [-2,1], [-1,-2], [-1,2], [1,-2], [1,2], [2,-1], [2,1]];
                 
@@ -987,7 +989,7 @@
                     const newCol = col + dCol;
                     
                     if (this.isValidPosition(newRow, newCol)) {
-                        if (this.isSquareEmpty(newRow, newCol) || this.isEnemyPiece(newRow, newCol, this.currentPlayer)) {
+                        if (this.isSquareEmpty(newRow, newCol) || this.isEnemyPiece(newRow, newCol, color)) {
                             moves.push([newRow, newCol]);
                         }
                     }
@@ -996,7 +998,7 @@
                 return moves;
             }
 
-            getLinearMoves(row, col, dRow, dCol) {
+            getLinearMoves(row, col, dRow, dCol, color) {
                 const moves = [];
                 let newRow = row + dRow;
                 let newCol = col + dCol;
@@ -1004,7 +1006,7 @@
                 while (this.isValidPosition(newRow, newCol)) {
                     if (this.isSquareEmpty(newRow, newCol)) {
                         moves.push([newRow, newCol]);
-                    } else if (this.isEnemyPiece(newRow, newCol, this.currentPlayer)) {
+                    } else if (this.isEnemyPiece(newRow, newCol, color)) {
                         moves.push([newRow, newCol]);
                         break;
                     } else {
@@ -1056,7 +1058,10 @@
                     for (let c = 0; c < 8; c++) {
                         const piece = this.getPieceAt(r, c);
                         if (piece && piece.color === byColor) {
-                            const moves = this.generatePieceMoves(r, c, piece);
+                            // When checking whether a square is under attack, do NOT include castling
+                            // moves for kings, because getCastlingMoves internally calls isSquareUnderAttack
+                            // which would otherwise cause recursive calls and possible stack overflow.
+                            const moves = this.generatePieceMoves(r, c, piece, { includeCastling: false });
                             if (moves.some(([moveRow, moveCol]) => moveRow === row && moveCol === col)) {
                                 return true;
                             }
