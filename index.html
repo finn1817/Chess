@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Game</title>
+    <link rel="stylesheet" href="Styles/Light.css" id="theme-style">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Chess Game</h1>
+            <div class="controls">
+                <button id="theme-toggle">🌙</button>
+                <button id="new-game">New Game</button>
+            </div>
+        </header>
+
+        <div id="game-mode-selection" class="mode-selection">
+            <h2>Select Game Mode</h2>
+            <button id="single-player" class="mode-btn">Single Player (vs AI)</button>
+            <button id="two-player" class="mode-btn">2 Player</button>
+        </div>
+
+        <div id="game-container" class="game-container hidden">
+            <div class="game-info">
+                <div id="current-player" class="player-info">
+                    <span id="player-name">White's Turn</span>
+                </div>
+                <div id="game-status" class="status"></div>
+            </div>
+            
+            <div class="chess-board-container">
+                <div id="chess-board" class="chess-board"></div>
+            </div>
+            
+            <div class="game-controls">
+                <button id="flip-board">Flip Board</button>
+                <button id="back-to-menu">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="Main/game-functionality.js"></script>
+    <script src="AI/Moves.js"></script>
+    <script src="Main/game-ui.js"></script>
+    <script src="Styles/toggle-theme.js"></script>
+</body>
+</html>
